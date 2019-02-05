@@ -17,6 +17,8 @@ mongoose.connect(
     }
 );
 
+mongoose.Promise = global.Promise;
+
 // Routes to handle requests
 const ingredientRoute = require('./api/routes/ingredient');
 const recipeRoute = require('./api/routes/recipe');

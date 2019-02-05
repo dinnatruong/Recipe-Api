@@ -7,10 +7,25 @@ const Ingredient = require('../models/ingredient');
 router.get('/', (req, res, next) => {
     Ingredient
         .find()
+        .select('title quantity unit _id')
         .exec()
         .then(docs => {
-            console.log(docs);
-            res.status(200).json(docs);
+            const response = {
+                count: docs.length,
+                ingredients: docs.map(doc => {
+                    return {
+                        title: doc.title,
+                        quantity: doc.quantity,
+                        unit: doc.unit,
+                        _id: doc._id,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/ingredient/' + doc._id
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response);
         })
         .catch(err => {
             console.log(err);
@@ -32,7 +47,16 @@ router.post('/', (req, res, next) => {
             console.log(result);
                     
             res.status(201).json({
-                createdIngredient: result
+                createdIngredient: {
+                    title: result.title,
+                    quantity: result.quantity,
+                    unit: result.unit,
+                    _id: result._id,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/ingredient/' + result._id
+                    }
+                }
             });
         })
         .catch(err => {
@@ -45,12 +69,19 @@ router.get('/:ingredientId', (req, res, next) => {
     const id = req.params.ingredientId;
 
     Ingredient.findById(id)
+        .select('title quantity unit _id')
         .exec()
         .then(doc => {
             console.log(doc);
 
             if (doc) {
-                res.status(200).json(doc);
+                res.status(200).json({
+                    ingredient: doc,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/ingredient'
+                    }
+                });
             } else {
                 res.status(404).json({message: 'No valid entry found.'});
             }
@@ -73,8 +104,12 @@ router.patch('/:ingredientId', (req, res, next) => {
         .update({_id: id}, {$set: updateOps})
         .exec()
         .then(result => {
-            console.log(result);
-            res.status(200).json(result);
+            res.status(200).json({
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/ingredient/' + id
+                }
+            });
         })
         .catch(err => {
             console.log(err);
@@ -90,7 +125,18 @@ router.delete('/:ingredientId', (req, res, next) => {
         .remove({_id: id})
         .exec()
         .then(result => {
-            res.status(200).json(result);
+            res.status(200).json({
+                message: 'Ingredient deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/ingredient/',
+                    body: {
+                        name: 'String',
+                        quantity: 'Number',
+                        unit: 'String'
+                    }
+                }
+            });
         })
         .catch(err => {
             console.log(err);
