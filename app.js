@@ -22,6 +22,7 @@ mongoose.Promise = global.Promise;
 // Routes to handle requests
 const ingredientRoute = require('./api/routes/ingredient');
 const recipeRoute = require('./api/routes/recipe');
+const recipeBookRoute = require('./api/routes/recipe_book');
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 app.use('/ingredient', ingredientRoute);
 app.use('/recipe', recipeRoute);
+app.use('/recipe_book', recipeBookRoute);
 
 app.use((req, res, next) => {
     const error = new Error('Not found.');
