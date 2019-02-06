@@ -3,14 +3,14 @@ const router = express.Router();
 
 const IngredientController = require('../controllers/ingredient');
 
-router.get('/', IngredientController.ingredient_getAll);
+router.get('/', IngredientController.ingredient_getAllIngredients);
 
-router.post('/', IngredientController.ingredient_post);
+router.post('/', IngredientController.ingredient_createIngredient);
 
-router.get('/:ingredientId', IngredientController.ingredient_get);
+router.get('/:ingredientId', IngredientController.ingredient_getIngredient);
 
-router.patch('/:ingredientId', IngredientController.ingredient_patch);
+router.patch('/:ingredientId', IngredientController.ingredient_updateIngredient);
 
-router.delete('/:ingredientId', IngredientController.ingredient_delete);
+router.delete('/:ingredientId', IngredientController.ingredient_deleteIngredient);
 
 module.exports = router;

@@ -2,10 +2,10 @@ const Recipe = require('../models/recipe');
 const Ingredient = require('../models/ingredient');
 const mongoose = require('mongoose');
 
-exports.recipe_getAll = (req, res, next) => {
+exports.recipe_getAllRecipes = (req, res, next) => {
     Recipe
         .find()
-        .select('ingredient instructions _id')
+        .select('title ingredient instructions image _id')
         .populate('ingredient', 'title')
         .exec()
         .then(docs => {
@@ -14,8 +14,10 @@ exports.recipe_getAll = (req, res, next) => {
                 recipe: docs.map(doc => {
                     return {
                         _id: doc._id,
+                        title: doc.title,
                         ingredient: doc.ingredient,
                         instructions: doc.instructions,
+                        image: doc.image,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/recipe/' + doc._id
@@ -32,30 +34,25 @@ exports.recipe_getAll = (req, res, next) => {
         });
 };
 
-exports.recipe_post = (req, res, next) => {
-    Ingredient.findById(req.body.ingredientId)
-        .then(ingredient => {
+exports.recipe_createRecipe = (req, res, next) => {
+    const recipe = new Recipe({
+        _id: mongoose.Types.ObjectId(),
+        title: req.body.title,
+        instructions: req.body.instructions,
+        ingredient: req.body.ingredientId,
+        image: req.body.image
+    });
 
-            if (!ingredient) {
-                return res.status(404).json({
-                    message: 'Ingredient not found'
-                })
-            }
-
-            const recipe = new Recipe({
-                _id: mongoose.Types.ObjectId(),
-                instructions: req.body.instructions,
-                ingredient: req.body.ingredientId
-            });
-
-            return recipe.save();
-        })
+    recipe
+        .save()
         .then(result => {
             res.status(201).json({
                 createdRecipe: {
                     _id: result._id,
+                    title: result.title,
                     ingredient: result.ingredient,
-                    instructions: result.instructions
+                    instructions: result.instructions,
+                    image: result.image
                 },
                 request: {
                     type: 'GET',
@@ -69,7 +66,7 @@ exports.recipe_post = (req, res, next) => {
         });
 };
 
-exports.recipe_get = (req, res, next) => {
+exports.recipe_getRecipe = (req, res, next) => {
     Recipe.findById(req.params.recipeId)
         .populate('ingredient')
         .exec()
@@ -94,7 +91,7 @@ exports.recipe_get = (req, res, next) => {
         });
 };
 
-exports.recipe_delete = (req, res, next) => {
+exports.recipe_deleteRecipe = (req, res, next) => {
     Recipe.remove({_id: req.params.recipeId})
         .exec()
         .then(result => {
@@ -105,7 +102,9 @@ exports.recipe_delete = (req, res, next) => {
                     url: 'http://localhost:3000/recipe/',
                     body: {
                         recipeId: 'ID',
-                        instructions: 'String'
+                        title: 'String',
+                        instructions: 'String',
+                        image: 'String'
                     }
                 }
             });

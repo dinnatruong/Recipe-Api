@@ -1,7 +1,7 @@
 const Ingredient = require('../models/ingredient');
 const mongoose = require('mongoose');
 
-exports.ingredient_getAll = (req, res, next) => {
+exports.ingredient_getAllIngredients = (req, res, next) => {
     Ingredient
         .find()
         .select('title quantity unit _id')
@@ -30,7 +30,7 @@ exports.ingredient_getAll = (req, res, next) => {
         });
 };
 
-exports.ingredient_post = (req, res, next) => {
+exports.ingredient_createIngredient = (req, res, next) => {
     const ingredient = new Ingredient({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
@@ -62,7 +62,7 @@ exports.ingredient_post = (req, res, next) => {
         });
 };
 
-exports.ingredient_get = (req, res, next) => {
+exports.ingredient_getIngredient = (req, res, next) => {
     const id = req.params.ingredientId;
 
     Ingredient.findById(id)
@@ -89,7 +89,7 @@ exports.ingredient_get = (req, res, next) => {
         });
 };
 
-exports.ingredient_patch = (req, res, next) => {
+exports.ingredient_updateIngredient = (req, res, next) => {
     const id = req.params.ingredientId;
     const updateOps = {};
 
@@ -115,7 +115,7 @@ exports.ingredient_patch = (req, res, next) => {
         });
 };
 
-exports.ingredient_delete = (req, res, next) => {
+exports.ingredient_deleteIngredient = (req, res, next) => {
     const id = req.params.ingredientId;
 
     Ingredient

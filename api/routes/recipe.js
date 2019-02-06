@@ -3,12 +3,12 @@ const router = express.Router();
 
 const RecipeController = require('../controllers/recipe');
 
-router.get('/', RecipeController.recipe_getAll);
+router.get('/', RecipeController.recipe_getAllRecipes);
 
-router.post('/', RecipeController.recipe_post);
+router.post('/', RecipeController.recipe_createRecipe);
 
-router.get('/:recipeId', RecipeController.recipe_get);
+router.get('/:recipeId', RecipeController.recipe_getRecipe);
 
-router.delete('/:recipeId', RecipeController.recipe_delete);
+router.delete('/:recipeId', RecipeController.recipe_deleteRecipe);
 
 module.exports = router;
